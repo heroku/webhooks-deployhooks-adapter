@@ -1,0 +1,54 @@
+GEM
+  remote: https://rubygems.org/
+  specs:
+    addressable (2.8.0)
+      public_suffix (>= 2.0.2, < 5.0)
+    crack (0.4.5)
+      rexml
+    diff-lcs (1.5.0)
+    hashdiff (1.0.1)
+    mustermann (1.1.2)
+      ruby2_keywords (~> 0.0.1)
+    public_suffix (4.0.7)
+    rack (2.2.4)
+    rack-protection (2.2.1)
+      rack
+    rexml (3.2.5)
+    rspec (3.11.0)
+      rspec-core (~> 3.11.0)
+      rspec-expectations (~> 3.11.0)
+      rspec-mocks (~> 3.11.0)
+    rspec-core (3.11.0)
+      rspec-support (~> 3.11.0)
+    rspec-expectations (3.11.0)
+      diff-lcs (>= 1.2.0, < 2.0)
+      rspec-support (~> 3.11.0)
+    rspec-mocks (3.11.1)
+      diff-lcs (>= 1.2.0, < 2.0)
+      rspec-support (~> 3.11.0)
+    rspec-support (3.11.0)
+    ruby2_keywords (0.0.5)
+    sinatra (2.2.1)
+      mustermann (~> 1.0)
+      rack (~> 2.2)
+      rack-protection (= 2.2.1)
+      tilt (~> 2.0)
+    tilt (2.0.10)
+    webmock (3.14.0)
+      addressable (>= 2.8.0)
+      crack (>= 0.3.2)
+      hashdiff (>= 0.4.0, < 2.0.0)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  rspec
+  sinatra
+  webmock
+
+RUBY VERSION
+   ruby 2.7.6p219
+
+BUNDLED WITH
+   2.3.14
