@@ -1,3 +1,3 @@
 require "./config/environment"
 
-run Rack::URLMap.new("/" => Hook)
+run Rack::URLMap.new("/" => HookAdapter)
