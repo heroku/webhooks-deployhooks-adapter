@@ -5,7 +5,7 @@ require 'json'
 
 class HookAdapter < Sinatra::Base
   post '/' do
-    invoke_http_hook
+    invoke_http_hook if http_hook_configured
     204
   end
 
@@ -18,6 +18,10 @@ class HookAdapter < Sinatra::Base
       body: body,
       headers: headers
     )
+  end
+
+  def http_hook_configured
+    !ENV['HTTP_ENDPOINT'].nil?
   end
 
   def http_hook_uri

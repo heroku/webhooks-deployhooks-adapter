@@ -32,4 +32,14 @@ RSpec.describe HookAdapter do
       expect(last_response.body).to be_empty
     end
   end
+
+  it 'does not call HTTP endpoint if it is not configured' do
+    ENV.delete('HTTP_ENDPOINT')
+
+    post '/'
+
+    assert_not_requested :any, 'https://deployhook.receiver.com/hook'
+    expect(last_response.status).to eq(204)
+    expect(last_response.body).to be_empty
+  end
 end
