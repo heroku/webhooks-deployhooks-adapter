@@ -5,17 +5,36 @@ require 'json'
 
 class HookAdapter < Sinatra::Base
   post '/' do
-    invoke_http_hook(body: deployhooks_formated_body) if http_hook_configured
+    invoke_http_hook(body: deployhooks_formated_body) if http_hook_configured && release_finished
     204
   end
 
   private
 
+  attr_reader :webhook_payload
+
+  def webhook_payload
+    @webhook_payload ||= parse_body
+  end
+
+  def parse_body
+    JSON.parse(request.body.read)
+  rescue StandardError => e
+    puts "An error occured while parsing the request: #{e}"
+    {}
+  end
+
+  def release_finished
+    status = webhook_payload.dig('data', 'status')
+    is_current = webhook_payload.dig('data', 'current')
+    action = webhook_payload['action']
+    status.eql?('succeeded') && action.eql?('update') && is_current
+  end
+
   # Formats webhooks' payload to resemble deployhooks behavior.
   # Notice that webhooks does not inform the URL
   # If the request can not be parsed returns an empty string
   def deployhooks_formated_body
-    webhook_payload = JSON.parse(request.body.read)
     deployhook_payload = {
       'app' => webhook_payload.dig('data', 'app', 'name'),
       'user' => webhook_payload.dig('actor', 'email'),
@@ -25,9 +44,6 @@ class HookAdapter < Sinatra::Base
       'git_log' => webhook_payload.dig('data', 'slug', 'commit_description')&.strip
     }
     deployhook_payload.to_json
-  rescue StandardError => e
-    puts "An error occured while parsing the request: #{e}"
-    ''
   end
 
   def invoke_http_hook(body: '')
