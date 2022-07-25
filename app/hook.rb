@@ -5,6 +5,7 @@ require 'json'
 
 class HookAdapter < Sinatra::Base
   post '/' do
+    verify_authorization!
     invoke_http_hook(body: deployhooks_formated_body) if http_hook_configured && release_finished
     204
   rescue Excon::Error => e
@@ -25,6 +26,16 @@ class HookAdapter < Sinatra::Base
   rescue StandardError => e
     puts "An error occured while parsing the request: #{e}"
     {}
+  end
+
+  def verify_authorization!
+    return unless authorization_enabled
+
+    halt 403 unless Rack::Utils.secure_compare(request.env['Authorization'], ENV['AUTHORIZATION'])
+  end
+
+  def authorization_enabled
+    !ENV['AUTHORIZATION'].nil?
   end
 
   def release_finished

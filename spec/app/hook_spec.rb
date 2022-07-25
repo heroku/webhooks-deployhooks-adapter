@@ -11,19 +11,23 @@ RSpec.describe HookAdapter do
     WebMock.reset!
   end
 
+  let(:stubbed_hook_request) do
+    stub_request(:post, 'https://deployhook.receiver.com/hook')
+      .with(body: deployhooks_formated_event_details.to_json,
+            headers: { 'Content-Type' => 'application/x-www-form-urlencoded' })
+      .to_return(status: 204)
+  end
+
+  before do
+    ENV['HTTP_ENDPOINT'] = 'https://deployhook.receiver.com/hook'
+    stubbed_hook_request
+  end
+
+  after do
+    ENV.delete('HTTP_ENDPOINT')
+  end
+
   context 'HTTP endpoint configured and responding' do
-    let(:stubbed_hook_request) do
-      stub_request(:post, 'https://deployhook.receiver.com/hook')
-        .with(body: deployhooks_formated_event_details.to_json,
-              headers: { 'Content-Type' => 'application/x-www-form-urlencoded' })
-        .to_return(status: 204)
-    end
-
-    before do
-      ENV['HTTP_ENDPOINT'] = 'https://deployhook.receiver.com/hook'
-      stubbed_hook_request
-    end
-
     after do
       assert_requested(stubbed_hook_request)
     end
@@ -88,6 +92,30 @@ RSpec.describe HookAdapter do
     assert_not_requested :any, 'https://deployhook.receiver.com/hook'
     expect(last_response.status).to eq(204)
     expect(last_response.body).to be_empty
+  end
+
+  context 'with authorization' do
+    before do
+      ENV['AUTHORIZATION'] = 'Bearer 01234567-89ab-cdef-0123-456789abcdef'
+    end
+
+    after do
+      ENV.delete('AUTHORIZATION')
+    end
+
+    it 'succeeds if the authorization header matches the configured value' do
+      post '/', webhook_release_finished_payload.to_json, 'Authorization' => 'Bearer 01234567-89ab-cdef-0123-456789abcdef'
+
+      expect(last_response.status).to eq(204)
+      expect(last_response.body).to be_empty
+    end
+
+    it 'fails if the authorization header does not match the configured value' do
+      post '/', webhook_release_finished_payload.to_json, 'Authorization' => 'wrong-authorization'
+
+      expect(last_response.status).to eq(403)
+      expect(last_response.body).to be_empty
+    end
   end
 
   def webhook_release_phase_started_payload
