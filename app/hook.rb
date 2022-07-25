@@ -7,6 +7,9 @@ class HookAdapter < Sinatra::Base
   post '/' do
     invoke_http_hook(body: deployhooks_formated_body) if http_hook_configured && release_finished
     204
+  rescue Excon::Error => e
+    puts "An error occured while sending the request: #{e}"
+    500
   end
 
   private

@@ -11,7 +11,7 @@ RSpec.describe HookAdapter do
     WebMock.reset!
   end
 
-  context 'HTTP endpoint configured' do
+  context 'HTTP endpoint configured and responding' do
     let(:stubbed_hook_request) do
       stub_request(:post, 'https://deployhook.receiver.com/hook')
         .with(body: deployhooks_formated_event_details.to_json,
@@ -67,6 +67,17 @@ RSpec.describe HookAdapter do
       expect(last_response.status).to eq(204)
       expect(last_response.body).to be_empty
     end
+  end
+
+  it 'fails if the endpoint does not respond' do
+    ENV['HTTP_ENDPOINT'] = 'https://broken-deployhook.receiver.com/hook'
+    stub_request(:post, 'https://broken-deployhook.receiver.com/hook')
+      .to_return(status: 503)
+
+    post '/', webhook_release_finished_payload.to_json
+
+    expect(last_response.status).to eq(500)
+    expect(last_response.body).to be_empty
   end
 
   it 'does not call HTTP endpoint if it is not configured' do
