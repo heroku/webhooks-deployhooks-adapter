@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'rspec'
 
 RSpec.describe HookAdapter do
@@ -9,12 +11,14 @@ RSpec.describe HookAdapter do
     WebMock.reset!
   end
 
-  context "HTTP endpoint accepts the message" do
-    let(:stubbed_hook_request) { stub_request(:post, "https://deployhook.receiver.com/hook")
-                      .to_return(status: 204) }
+  context 'HTTP endpoint accepts the message' do
+    let(:stubbed_hook_request) do
+      stub_request(:post, 'https://deployhook.receiver.com/hook')
+        .to_return(status: 204)
+    end
 
     before do
-      ENV["HTTP_ENDPOINT"] = "https://deployhook.receiver.com/hook"
+      ENV['HTTP_ENDPOINT'] = 'https://deployhook.receiver.com/hook'
       stubbed_hook_request
     end
 
@@ -22,8 +26,8 @@ RSpec.describe HookAdapter do
       assert_requested(stubbed_hook_request)
     end
 
-    it "returns status 204" do
-      post "/"
+    it 'returns status 204' do
+      post '/'
       expect(last_response.status).to eq(204)
       expect(last_response.body).to be_empty
     end

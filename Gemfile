@@ -1,13 +1,15 @@
-source "https://rubygems.org"
+# frozen_string_literal: true
 
-ruby "2.7.6"
+source 'https://rubygems.org'
 
-gem "excon"
-gem "rack"
-gem "sinatra", require: "sinatra/base"
+ruby '2.7.6'
+
+gem 'excon'
+gem 'rack'
+gem 'sinatra', require: 'sinatra/base'
 
 group :test do
-  gem "rack-test", require: "rack/test"
-  gem "rspec"
-  gem "webmock", require: %w[webmock webmock/rspec]
+  gem 'rack-test', require: 'rack/test'
+  gem 'rspec'
+  gem 'webmock', require: %w[webmock webmock/rspec]
 end

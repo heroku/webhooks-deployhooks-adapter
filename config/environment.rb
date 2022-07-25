@@ -1,7 +1,9 @@
-require "rubygems"
-require "bundler"
+# frozen_string_literal: true
+
+require 'rubygems'
+require 'bundler'
 
 Bundler.require(:default) # load all the default gems
 Bundler.require(Sinatra::Base.environment) # load all the environment specific gems
 
-require "./app/hook"
+require './app/hook'

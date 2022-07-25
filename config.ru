@@ -1,3 +1,5 @@
-require "./config/environment"
+# frozen_string_literal: true
 
-run Rack::URLMap.new("/" => HookAdapter)
+require './config/environment'
+
+run Rack::URLMap.new('/' => HookAdapter)

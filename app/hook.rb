@@ -1,15 +1,17 @@
-require "excon"
-require "json"
+# frozen_string_literal: true
+
+require 'excon'
+require 'json'
 
 class HookAdapter < Sinatra::Base
-  post "/" do
+  post '/' do
     invoke_http_hook
     204
   end
 
   private
 
-  def invoke_http_hook(body: "")
+  def invoke_http_hook(body: '')
     Excon.new(http_hook_uri).request(
       method: :post,
       expects: [200, 204],
@@ -19,6 +21,6 @@ class HookAdapter < Sinatra::Base
   end
 
   def http_hook_uri
-    URI.parse(ENV["HTTP_ENDPOINT"]).to_s
+    URI.parse(ENV['HTTP_ENDPOINT']).to_s
   end
 end
