@@ -14,6 +14,7 @@ RSpec.describe HookAdapter do
   context 'HTTP endpoint accepts the message' do
     let(:stubbed_hook_request) do
       stub_request(:post, 'https://deployhook.receiver.com/hook')
+        .with(headers: {'Content-Type' => 'application/x-www-form-urlencoded'})
         .to_return(status: 204)
     end
 

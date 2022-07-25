@@ -12,6 +12,7 @@ class HookAdapter < Sinatra::Base
   private
 
   def invoke_http_hook(body: '')
+    headers = { 'Content-Type' => 'application/x-www-form-urlencoded' }
     Excon.new(http_hook_uri).request(
       method: :post,
       expects: [200, 204],
