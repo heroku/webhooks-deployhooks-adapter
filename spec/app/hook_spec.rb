@@ -42,6 +42,15 @@ RSpec.describe HookAdapter do
       expect(last_response.status).to eq(204)
       expect(last_response.body).to be_empty
     end
+
+    it 'ignores release phase started message' do
+      post '/', webhook_release_phase_started_payload.to_json
+      post '/', webhook_release_started_payload.to_json
+      post '/', webhook_release_finished_payload.to_json
+
+      expect(last_response.status).to eq(204)
+      expect(last_response.body).to be_empty
+    end
   end
 
   it 'does not call HTTP endpoint if it is not configured' do
@@ -52,6 +61,43 @@ RSpec.describe HookAdapter do
     assert_not_requested :any, 'https://deployhook.receiver.com/hook'
     expect(last_response.status).to eq(204)
     expect(last_response.body).to be_empty
+  end
+
+  def webhook_release_phase_started_payload
+    {
+      'id' => '01234567-89ab-cde0-1234-56789abcde00',
+      'data' => {
+        'id' => '01234567-89ab-cde0-1234-56789abcde00',
+        'app' => {
+          'id' => '01234567-89ab-cde0-1234-56789abcde01',
+          'name' => 'awesome-app-42'
+        },
+        'slug' => {
+          'id' => '01234567-89ab-cde0-1234-56789abcde00',
+          'commit' => '48AKJH48758769671293ALFKJHL',
+          'commit_description' => '  * jane: sample commit message'
+        },
+        'user' => {
+          'id' => '01234567-89ab-cde0-1234-56789abcde01',
+          'email' => 'jane@comapny.com'
+        },
+        'status' => 'pending',
+        'current' => false,
+        'version' => 42,
+        'created_at' => '2022-08-01T20:20:20Z',
+        'updated_at' => '2022-08-01T20:20:20Z',
+        'description' => 'Deploy 48AKJH',
+      },
+      'actor' => {
+        'id' => '01234567-89ab-cde0-1234-56789abcde01',
+        'email' => 'jane@comapny.com'
+      },
+      'action' => 'create',
+      'resource' => 'release',
+      'created_at' => '2022-08-01T20:20:20.20Z',
+      'updated_at' => '2022-08-01T20:20:20.20Z',
+      'published_at' => '2022-08-01T20:20:20Z'
+    }
   end
 
   def webhook_release_started_payload
@@ -76,7 +122,7 @@ RSpec.describe HookAdapter do
         'current' => true,
         'version' => 42,
         'created_at' => '2022-08-01T20:20:20Z',
-        'updated_at' => '2022-08-01T20:20:20Z',
+        'updated_at' => '2022-08-01T20:20:21Z',
         'description' => 'Deploy 48AKJH',
       },
       'actor' => {
@@ -86,16 +132,16 @@ RSpec.describe HookAdapter do
       'action' => 'create',
       'resource' => 'release',
       'created_at' => '2022-08-01T20:20:20.20Z',
-      'updated_at' => '2022-08-01T20:20:20.20Z',
-      'published_at' => '2022-08-01T20:20:20Z'
+      'updated_at' => '2022-08-01T20:20:20.21Z',
+      'published_at' => '2022-08-01T20:20:21Z'
     }
   end
 
   def webhook_release_finished_payload
     {
-      'id' => '01234567-89ab-cde0-1234-56789abcde01',
+      'id' => '01234567-89ab-cde0-1234-56789abcde02',
       'data' => {
-        'id' => '01234567-89ab-cde0-1234-56789abcde01',
+        'id' => '01234567-89ab-cde0-1234-56789abcde02',
         'app' => {
           'id' => '01234567-89ab-cde0-1234-56789abcde01',
           'name' => 'awesome-app-42'
@@ -113,7 +159,7 @@ RSpec.describe HookAdapter do
         'current' => true,
         'version' => 42,
         'created_at' => '2022-08-01T20:20:20Z',
-        'updated_at' => '2022-08-01T20:20:20Z',
+        'updated_at' => '2022-08-01T20:20:22Z',
         'description' => 'Deploy 48AKJH',
       },
       'actor' => {
@@ -123,8 +169,8 @@ RSpec.describe HookAdapter do
       'action' => 'update',
       'resource' => 'release',
       'created_at' => '2022-08-01T20:20:20.20Z',
-      'updated_at' => '2022-08-01T20:20:20.20Z',
-      'published_at' => '2022-08-01T20:20:20Z'
+      'updated_at' => '2022-08-01T20:20:20.22Z',
+      'published_at' => '2022-08-01T20:20:22Z'
     }
   end
 
