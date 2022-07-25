@@ -26,8 +26,8 @@ class HookAdapter < Sinatra::Base
 
   def release_finished
     status = webhook_payload.dig('data', 'status')
-    is_current = webhook_payload.dig('data', 'current')
     action = webhook_payload['action']
+    is_current = webhook_payload.dig('data', 'current')
     status.eql?('succeeded') && action.eql?('update') && is_current
   end
 
@@ -35,7 +35,7 @@ class HookAdapter < Sinatra::Base
   # Notice that webhooks does not inform the URL
   # If the request can not be parsed returns an empty string
   def deployhooks_formated_body
-    deployhook_payload = {
+    {
       'app' => webhook_payload.dig('data', 'app', 'name'),
       'user' => webhook_payload.dig('actor', 'email'),
       'url' => '',
@@ -43,7 +43,6 @@ class HookAdapter < Sinatra::Base
       'head_long' => webhook_payload.dig('data', 'slug', 'commit'),
       'git_log' => webhook_payload.dig('data', 'slug', 'commit_description')&.strip
     }
-    deployhook_payload.to_json
   end
 
   def invoke_http_hook(body: '')
@@ -51,7 +50,7 @@ class HookAdapter < Sinatra::Base
     Excon.new(http_hook_uri).request(
       method: :post,
       expects: [200, 204],
-      body: body,
+      body: body.to_json,
       headers: headers
     )
   end
@@ -61,6 +60,11 @@ class HookAdapter < Sinatra::Base
   end
 
   def http_hook_uri
-    URI.parse(ENV['HTTP_ENDPOINT']).to_s
+    uri = URI.parse(ENV['HTTP_ENDPOINT'])
+    variable = /{{(\w+)}}/
+    uri.to_s.gsub(variable) do |match_string|
+      matchdata = match_string.match(variable)
+      Addressable::URI.encode_component(deployhooks_formated_body[matchdata[1]], Addressable::URI::CharacterClasses::PATH)
+    end
   end
 end

@@ -51,6 +51,22 @@ RSpec.describe HookAdapter do
       expect(last_response.status).to eq(204)
       expect(last_response.body).to be_empty
     end
+
+    it 'replaces params on the URL' do
+      ENV['HTTP_ENDPOINT'] = 'https://deployhook.receiver.com/hook?app={{app}}&user={{user}}&head={{head}}&head_long={{head_long}}&git_log={{git_log}}'
+      stubbed_hook_request.with(query: {
+                                  app: 'awesome-app-42',
+                                  user: 'jane@comapny.com',
+                                  head: '48AKJH',
+                                  head_long: '48AKJH48758769671293ALFKJHL',
+                                  git_log: '* jane: sample commit message'
+                                })
+
+      post '/', webhook_release_finished_payload.to_json
+
+      expect(last_response.status).to eq(204)
+      expect(last_response.body).to be_empty
+    end
   end
 
   it 'does not call HTTP endpoint if it is not configured' do
