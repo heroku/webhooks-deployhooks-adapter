@@ -6,6 +6,7 @@ require 'json'
 class HookAdapter < Sinatra::Base
   post '/' do
     verify_authorization!
+    verify_message_digest!
     invoke_http_hook(body: deployhooks_formated_body) if http_hook_configured && release_finished
     204
   rescue Excon::Error => e
@@ -22,6 +23,7 @@ class HookAdapter < Sinatra::Base
   end
 
   def parse_body
+    request.body.rewind
     JSON.parse(request.body.read)
   rescue StandardError => e
     puts "An error occured while parsing the request: #{e}"
@@ -36,6 +38,27 @@ class HookAdapter < Sinatra::Base
 
   def authorization_enabled
     !ENV['AUTHORIZATION'].nil?
+  end
+
+  def verify_message_digest!
+    return unless digest_enabled
+
+    halt 400 unless valid_signature?(request, ENV['WEBHOOK_SECRET'])
+  end
+
+  def digest_enabled
+    !ENV['WEBHOOK_SECRET'].nil?
+  end
+
+  def valid_signature?(request, webhook_secret)
+    calculated_hmac = Base64.encode64(OpenSSL::HMAC.digest(
+      OpenSSL::Digest.new('sha256'),
+      webhook_secret,
+      request.body.read
+    )).strip
+    heroku_hmac = request.env['Heroku-Webhook-Hmac-SHA256']
+
+    heroku_hmac && Rack::Utils.secure_compare(calculated_hmac, heroku_hmac)
   end
 
   def release_finished

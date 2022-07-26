@@ -118,6 +118,30 @@ RSpec.describe HookAdapter do
     end
   end
 
+  context 'with secret' do
+    before do
+      ENV['WEBHOOK_SECRET'] = 'my-secret'
+    end
+
+    after do
+      ENV.delete('WEBHOOK_SECRET')
+    end
+
+    it 'succeeds if the message was signed with the shared secret' do
+      post '/', webhook_release_finished_payload.to_json, signature_header(webhook_release_finished_payload)
+
+      expect(last_response.status).to eq(204)
+      expect(last_response.body).to be_empty
+    end
+
+    it 'fails if the message was signed with the wrong secret' do
+      post '/', webhook_release_finished_payload.to_json, signature_header(webhook_release_finished_payload, 'wrong-secret')
+
+      expect(last_response.status).to eq(400)
+      expect(last_response.body).to be_empty
+    end
+  end
+
   def webhook_release_phase_started_payload
     {
       'id' => '01234567-89ab-cde0-1234-56789abcde00',
@@ -237,6 +261,18 @@ RSpec.describe HookAdapter do
       'head' => '48AKJH',
       'head_long' => '48AKJH48758769671293ALFKJHL',
       'git_log' => '* jane: sample commit message'
+    }
+  end
+
+  def signature_header(payload, secret = ENV['WEBHOOK_SECRET'])
+    signature = Base64.encode64(OpenSSL::HMAC.digest(
+                                  OpenSSL::Digest.new('sha256'),
+                                  secret,
+                                  payload.to_json)
+                               ).strip
+
+    {
+      'Heroku-Webhook-Hmac-SHA256' => signature
     }
   end
 end
