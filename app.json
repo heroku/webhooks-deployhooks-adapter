@@ -1,0 +1,18 @@
+{
+  "name": "Webhooks to Deploy Hooks adapter",
+  "description": "Transforms a Webhook message into a Deploy Hook message",
+  "repository": "https://github.com/heroku/webhooks-deployhooks-adapter",
+  "env": {
+    "HTTP_ENDPOINT": {
+      "description": "The endpoint that will receive the messages."
+    },
+    "AUTHORIZATION": {
+      "description": "The Authorization header that Webhooks sends. Used to verify the authenticity of the message",
+      "required": false
+    },
+    "WEBHOOK_SECRET": {
+      "description": "The secret that Webhooks uses to sign messages. Used to verify the authenticity of the message",
+      "required": false
+    }
+  }
+}
