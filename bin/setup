@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+
+# Exit if any subcommand fails
+set -euo pipefail
+
+echo "Installing dependencies"
+bundle check > /dev/null || bundle install --quiet
+
+echo "All set. Happy coding!"
