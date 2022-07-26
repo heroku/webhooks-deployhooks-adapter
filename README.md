@@ -11,3 +11,24 @@ Feel free to fork this repo and customize it to your needs.
 [![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/heroku/webhooks-deployhooks-adapter)
 
 Click on the deploy button and provide the requested config vars.
+
+## Configuration
+
+This app uses 3 config vars
+
+### `HTTP_ENDPOINT`
+This is the URL where you currently receive Deploy Hooks notifications. It will be called on every release of your app.
+
+### `AUTHORIZATION`
+You can provide this value when you create a new Webhook. Every message Webhooks send will have this value on the `Authorization` header
+
+If you don't provide this value the Authorization header will be ignored and all messages will be accepted.
+
+[Refer to App Webhooks' shared authorization documentation for more info](https://devcenter.heroku.com/articles/app-webhooks#using-the-shared-authorization)
+
+### `WEBHOOK_SECRET`
+This value is provided to you when you first set up a Webhook. It will be used to sign every message Webhooks send.
+
+If you don't provide this value the digest header will be ignored and all messages will be accepted.
+
+[Refer to App Webhooks' shared secret documentation for more info](https://devcenter.heroku.com/articles/app-webhooks#using-the-shared-secret)
