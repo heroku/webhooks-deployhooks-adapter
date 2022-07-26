@@ -46,6 +46,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  addressable
   excon
   rack
   rack-test
