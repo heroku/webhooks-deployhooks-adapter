@@ -82,16 +82,19 @@ class HookAdapter < Sinatra::Base
   end
 
   # Formats webhooks' payload to resemble deployhooks behavior.
-  # Notice that webhooks does not inform the URL
+  # Notice that webhooks does not inform the URL and prev_head
   # If the request can not be parsed returns an empty string
   def deployhooks_formated_body
     {
       'app' => webhook_payload.dig('data', 'app', 'name'),
+      'app_uuid' => webhook_payload.dig('data', 'app', 'id'),
       'user' => webhook_payload.dig('actor', 'email'),
       'url' => '',
       'head' => webhook_payload.dig('data', 'slug', 'commit')&.slice(0, 8),
       'head_long' => webhook_payload.dig('data', 'slug', 'commit'),
-      'git_log' => webhook_payload.dig('data', 'slug', 'commit_description')&.strip
+      'git_log' => webhook_payload.dig('data', 'slug', 'commit_description')&.strip,
+      'prev_head' => '',
+      'release' => webhook_payload.dig('data', 'version')
     }
   end
 

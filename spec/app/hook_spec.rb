@@ -256,11 +256,14 @@ RSpec.describe HookAdapter do
   def deployhooks_formated_event_details
     {
       'app' => 'awesome-app-42',
+      'app_uuid' => '01234567-89ab-cde0-1234-56789abcde01',
       'user' => 'jane@comapny.com',
       'url' => '',
       'head' => '48AKJH48',
       'head_long' => '48AKJH48758769671293ALFKJHL',
-      'git_log' => '* jane: sample commit message'
+      'git_log' => '* jane: sample commit message',
+      'prev_head' => '',
+      'release' => 42
     }
   end
 
