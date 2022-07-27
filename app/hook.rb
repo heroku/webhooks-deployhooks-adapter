@@ -67,7 +67,7 @@ class HookAdapter < Sinatra::Base
     Excon.new(http_hook_uri).request(
       method: :post,
       expects: [200, 204],
-      body: body.to_json,
+      body: URI.encode_www_form(body),
       headers: headers
     )
   end

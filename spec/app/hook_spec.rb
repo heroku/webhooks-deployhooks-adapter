@@ -13,7 +13,7 @@ RSpec.describe HookAdapter do
 
   let(:stubbed_hook_request) do
     stub_request(:post, 'https://deployhook.receiver.com/hook')
-      .with(body: deployhooks_formated_event_details.to_json,
+      .with(body: URI.encode_www_form(deployhooks_formated_event_details),
             headers: { 'Content-Type' => 'application/x-www-form-urlencoded' })
       .to_return(status: 204)
   end
