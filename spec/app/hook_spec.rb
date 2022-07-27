@@ -61,7 +61,7 @@ RSpec.describe HookAdapter do
       stubbed_hook_request.with(query: {
                                   app: 'awesome-app-42',
                                   user: 'jane@comapny.com',
-                                  head: '48AKJH',
+                                  head: '48AKJH48',
                                   head_long: '48AKJH48758769671293ALFKJHL',
                                   git_log: '* jane: sample commit message'
                                 })
@@ -258,7 +258,7 @@ RSpec.describe HookAdapter do
       'app' => 'awesome-app-42',
       'user' => 'jane@comapny.com',
       'url' => '',
-      'head' => '48AKJH',
+      'head' => '48AKJH48',
       'head_long' => '48AKJH48758769671293ALFKJHL',
       'git_log' => '* jane: sample commit message'
     }

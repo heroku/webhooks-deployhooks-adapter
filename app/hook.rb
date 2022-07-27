@@ -89,7 +89,7 @@ class HookAdapter < Sinatra::Base
       'app' => webhook_payload.dig('data', 'app', 'name'),
       'user' => webhook_payload.dig('actor', 'email'),
       'url' => '',
-      'head' => webhook_payload.dig('data', 'slug', 'commit')&.slice(0, 6),
+      'head' => webhook_payload.dig('data', 'slug', 'commit')&.slice(0, 8),
       'head_long' => webhook_payload.dig('data', 'slug', 'commit'),
       'git_log' => webhook_payload.dig('data', 'slug', 'commit_description')&.strip
     }
