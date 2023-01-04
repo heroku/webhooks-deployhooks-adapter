@@ -8,7 +8,7 @@ Feel free to fork this repo and customize it to your needs.
 
 ## Deploy
 
-[![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/heroku/webhooks-deployhooks-adapter)
+[![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/epfl-exts/webhooks-deployhooks-adapter)
 
 Click on the deploy button and provide the requested config vars.
 
