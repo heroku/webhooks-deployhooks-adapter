@@ -4,6 +4,10 @@ This app is intended as an example to aid on the migration from [Deploy Hooks](h
 
 It receives a Webhook release message, generates a message similar to the one Deploy Hooks HTTP Hook made and calls an endpoint with that payload.
 
+Keep in mind that several actions may trigger a [release](https://devcenter.heroku.com/articles/releases), you will receive a Webhook message for every release.
+This is slightly different from what you received with Deploy Hooks; if you only want to receive a notification when a code change happened you need to
+filter [messages](https://devcenter.heroku.com/articles/webhook-events#api-release) based on the description, code changes have a description starting with "Deploy".
+
 Feel free to fork this repo and customize it to your needs.
 
 ## Deploy
